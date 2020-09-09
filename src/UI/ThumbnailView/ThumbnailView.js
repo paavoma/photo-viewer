@@ -42,7 +42,9 @@ class ThumbnailView extends Component {
         return (
             <div>
                 <div>
-                    <button onClick={this.props.changeNextPage}>Next page</button>
+                    <button onClick={this.props.changePrevPage}>Back</button>
+                    <p>{this.props.currentPage}</p>
+                    <button onClick={this.props.changeNextPage}>Next</button>
                 </div>
                 <div>
                     {

@@ -4,7 +4,7 @@ import classes from './LargeImage.module.css';
 function LargeImage(props){
     return(
         <div>
-            <img src={props.url}></img>
+            <img src={props.url} alt={props.title}></img>
             <p>{props.title}</p>
             <button onClick={props.showThumbnailView}>Back</button>
         </div>

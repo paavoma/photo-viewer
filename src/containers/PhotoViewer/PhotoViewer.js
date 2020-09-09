@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import classes from './PhotoViewer.module.css';
-import LargeImage from '../../components/LargeImage/LargeImage';
 import ThumbnailView from '../../UI/ThumbnailView/ThumbnailView';
 
 const API = 'https://jsonplaceholder.typicode.com/photos';
+const THUMBNAILAMOUNT = 10;
 const DEFAULT_QUERY = '';
+let pageAmount = 0;
 
 class PhotoViewer extends Component {
     constructor() {
@@ -14,8 +15,7 @@ class PhotoViewer extends Component {
             isLoading: true,
             shownStartIndex: 0,
             currentEndIndex: 0,
-            shownThumbnails: [],
-            amountThumbnails: 200
+            shownThumbnails: []
         }
     };
 
@@ -27,46 +27,39 @@ class PhotoViewer extends Component {
 
             this.setState({
                 content: json,
-                
                 isLoading: false,
+            },
+            () => {
+                this.updateShownThumbnails();
+                this.setPageAmount();
             });
             
         } catch (error) {
             console.log(error);
         }
-        this.updateShownThumbnails();
         
     }
     
-    changeNextPage(){  
-        let currentEndIndex = this.state.currentEndIndex;
-        let newStartIndex = currentEndIndex+1;
-        if(newStartIndex >= this.state.content.length){
-         
-            newStartIndex = 0; 
+    setPageAmount(){
+        const dataLength = this.state.content.length;
+        const amountThumbnails = THUMBNAILAMOUNT;
+        let numberOfPages = 0;
+        if(dataLength % amountThumbnails === 0){
+            numberOfPages = dataLength / amountThumbnails;
+        }else{
+            numberOfPages = ((dataLength - (dataLength % amountThumbnails)) / amountThumbnails) + 1;
         }
-
-        //because setState is asychnronous, callback function is required
-        this.setState({
-            shownStartIndex: newStartIndex
-        },
-        () => this.updateShownThumbnails()
-        )
+        pageAmount = numberOfPages;
     }
 
-    drawUI(){
-            return this.drawThumbnailView();
+    getCurrentPageOfMax(){
+        const resultText =  1 +(((this.state.shownStartIndex)/THUMBNAILAMOUNT)) + " of " + pageAmount;
+        return resultText;
+        
     }
-
-    drawThumbnailView(){
-        return <ThumbnailView   shownThumbnails={this.state.shownThumbnails} 
-                                
-                                changeNextPage={() => this.changeNextPage()}></ThumbnailView>;
-    }
-    
 
     updateShownThumbnails(){
-        const amountThumbnails = this.state.amountThumbnails;
+        const amountThumbnails = THUMBNAILAMOUNT;
         let shownThumbnails = [];
         let currentIndex = this.state.shownStartIndex;
         let endingIndex = currentIndex+amountThumbnails;
@@ -78,7 +71,7 @@ class PhotoViewer extends Component {
             shownThumbnails.push(this.state.content[currentIndex]);
         }
         this.setState({
-            currentEndIndex: currentIndex,
+            currentEndIndex: currentIndex-1,
             shownThumbnails: shownThumbnails
         },
         () => {
@@ -88,13 +81,54 @@ class PhotoViewer extends Component {
         
     }
 
+    changeNextPage(){  
+        let currentEndIndex = this.state.currentEndIndex;
+        let newStartIndex = currentEndIndex+1;
+
+        if(newStartIndex >= this.state.content.length){
+            newStartIndex = 0; 
+        }
+
+        
+        this.updateShownIndexAndThumbnails(newStartIndex);
+    }
+    changePrevPage(){
+        let currentStartIndex = this.state.shownStartIndex;
+        let newStartIndex = currentStartIndex-THUMBNAILAMOUNT;
+        let dataLength = this.state.content.length;
+
+        if(newStartIndex < 0){
+            newStartIndex = dataLength - THUMBNAILAMOUNT;
+        }
+
+        this.updateShownIndexAndThumbnails(newStartIndex);
+        
+    }
+    updateShownIndexAndThumbnails(newStartIndex){
+
+        //because setState is asynchronous, callback function is required to properly update the view
+        this.setState({
+            shownStartIndex: newStartIndex
+        },
+        () => this.updateShownThumbnails()
+        )
+    }
+
+    drawThumbnailView(){
+        return <ThumbnailView   shownThumbnails={this.state.shownThumbnails} 
+                                currentPage={this.getCurrentPageOfMax()}
+                                changeNextPage={() => this.changeNextPage()}
+                                changePrevPage={() => this.changePrevPage()}></ThumbnailView>;
+    }
+    
+
+    
+
     
 
     render() {
         return (
             <div>
-
-
                 {
                     this.state.isLoading ?
                         <div>
@@ -102,7 +136,7 @@ class PhotoViewer extends Component {
                         </div>
                         :
                         <div>
-                            {this.drawUI()}
+                            {this.drawThumbnailView()}
                         </div>
                 }
             </div>
