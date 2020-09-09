@@ -15,7 +15,6 @@ class ThumbnailView extends Component {
 
     showClickedImage = e => {
         let imageIndex = this.findElementIndexWithId(e.currentTarget.id);
-        console.log(imageIndex);
         this.setState({
             showThumbnailView: false,
             clickedImageIndex: imageIndex,
@@ -28,23 +27,23 @@ class ThumbnailView extends Component {
             showThumbnailView: true
         })
     }
+    
+    
 
-    drawFullScreenView() {
-        return <LargeImage url={this.state.content[this.state.clickedImageIndex].url} title={this.state.content[this.state.clickedImageIndex].title}></LargeImage>
-    }
-
-    //this is used instead of straight id-1 as index because the images might be re-ordered and located in a different index.
+    //this is used instead of straight id-1 as index because the images might be later re-ordered and located in a different index.
     findElementIndexWithId(id) {
-        console.log(this.state.clickedImageId);
+        
         const list = this.props.shownThumbnails;
         var element = list.find(thumbnail => thumbnail.id == id);
         return list.indexOf(element);
-
     }
 
     drawThumbnailView() {
         return (
             <div>
+                <div>
+                    <button onClick={this.props.changeNextPage}>Next page</button>
+                </div>
                 <div>
                     {
                         this.props.shownThumbnails.map((thumbnail) => {
@@ -54,9 +53,7 @@ class ThumbnailView extends Component {
                     }
 
                 </div>
-                <div>
-                    <button onClick={this.props.changeNextPage}>Next page</button>
-                </div>
+                
             </div>
         )
     }

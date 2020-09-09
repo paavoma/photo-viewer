@@ -15,7 +15,7 @@ class PhotoViewer extends Component {
             shownStartIndex: 0,
             currentEndIndex: 0,
             shownThumbnails: [],
-            amountThumbnails: 30
+            amountThumbnails: 200
         }
     };
 
@@ -34,30 +34,24 @@ class PhotoViewer extends Component {
         } catch (error) {
             console.log(error);
         }
-        this.setState({
-            shownThumbnails: this.getShownThumbnails(this.state.amountThumbnails),
-        })
+        this.updateShownThumbnails();
         
     }
     
     changeNextPage(){  
-        console.log("täällä käyty")
         let currentEndIndex = this.state.currentEndIndex;
-        let newStartIndex = 0;
-
-        if(currentEndIndex < this.state.content.length){
-            console.log("iffissä käyty")
-            newStartIndex = currentEndIndex+1; 
+        let newStartIndex = currentEndIndex+1;
+        if(newStartIndex >= this.state.content.length){
+         
+            newStartIndex = 0; 
         }
 
+        //because setState is asychnronous, callback function is required
         this.setState({
-            shownStartIndex: newStartIndex,
-            shownThumbnails: this.getShownThumbnails(this.state.amountThumbnails)
-        })
-
-        console.log("alotusindex " + this.state.shownStartIndex)
-        console.log("lopetusindex " + this.state.currentEndIndex)
-        
+            shownStartIndex: newStartIndex
+        },
+        () => this.updateShownThumbnails()
+        )
     }
 
     drawUI(){
@@ -71,21 +65,27 @@ class PhotoViewer extends Component {
     }
     
 
-    getShownThumbnails(amountThumbnails){
+    updateShownThumbnails(){
+        const amountThumbnails = this.state.amountThumbnails;
         let shownThumbnails = [];
         let currentIndex = this.state.shownStartIndex;
         let endingIndex = currentIndex+amountThumbnails;
         for(currentIndex; currentIndex < endingIndex; currentIndex++){
             //if there is less images to show than amountThumbnails
-            if(currentIndex > this.state.content.length)
+            if(currentIndex >= this.state.content.length)
             break;
             else
             shownThumbnails.push(this.state.content[currentIndex]);
         }
         this.setState({
-            currentEndIndex: currentIndex
+            currentEndIndex: currentIndex,
+            shownThumbnails: shownThumbnails
+        },
+        () => {
+            console.log("startIndex" + this.state.shownStartIndex);
+            console.log("ending index" + this.state.currentEndIndex);
         })
-        return shownThumbnails;
+        
     }
 
     
