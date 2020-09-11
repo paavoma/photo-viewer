@@ -1,5 +1,22 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# photo-viewer
+
+### Description:
+This is a simple photo gallery viewer. User can click images to see the full-size image.</br>
+The app uses mockupdata generated with: http://jsonplaceholder.typicode.com/photos</br>
+It is designed to be used with both mobile and desktop computers.</br>
+
+### Live demo:
+https://photo-gallery-viewer.herokuapp.com/
+
+### How to run app locally:
+open bash console</br>
+git clone https://github.com/paavoma/photo-viewer.git</br>
+cd photo-viewer</br>
+npm install</br>
+npm start</br>
+
 ## Available Scripts
 
 In the project directory, you can run:
