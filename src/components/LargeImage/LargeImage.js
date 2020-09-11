@@ -9,7 +9,7 @@ function LargeImage(props){
             <img src={props.url} alt={props.title}></img>
             </div>
             <p>{props.title}</p>
-            <button onClick={props.showThumbnailView}>Back</button>
+            <button onClick={props.showThumbnailView}>Close</button>
         </div>
     )
 

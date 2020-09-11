@@ -3,8 +3,8 @@ import classes from './PhotoViewer.module.css';
 import ThumbnailView from '../../UI/ThumbnailView/ThumbnailView';
 
 const API = 'https://jsonplaceholder.typicode.com/photos';
-const THUMBNAILAMOUNT = 10;
-const DEFAULT_QUERY = '';
+const QUERY = '';
+const THUMBNAILAMOUNT = 12;
 let pageAmount = 0;
 
 class PhotoViewer extends Component {
@@ -18,121 +18,123 @@ class PhotoViewer extends Component {
             shownThumbnails: []
         }
     };
-
+    //fetch data from API
     async componentDidMount() {
         this.setState({ isLoading: true });
         try {
-            const response = await fetch(API);
+            const response = await fetch(API+QUERY);
             const json = await response.json();
 
             this.setState({
                 content: json,
                 isLoading: false,
             },
-            () => {
-                this.updateShownThumbnails();
-                this.setPageAmount();
-            });
-            
+                () => {
+                    this.updateShownThumbnails();
+                    this.setPageAmount();
+                });
+
         } catch (error) {
             console.log(error);
         }
-        
+
     }
-    
-    setPageAmount(){
+    //calculates the amount of pages to display
+    setPageAmount() {
         const dataLength = this.state.content.length;
         const amountThumbnails = THUMBNAILAMOUNT;
         let numberOfPages = 0;
-        if(dataLength % amountThumbnails === 0){
+
+        if (dataLength % amountThumbnails === 0) {
             numberOfPages = dataLength / amountThumbnails;
-        }else{
+        } else {
             numberOfPages = ((dataLength - (dataLength % amountThumbnails)) / amountThumbnails) + 1;
         }
         pageAmount = numberOfPages;
     }
-
-    getCurrentPageOfMax(){
-        const resultText =  1 +(((this.state.shownStartIndex)/THUMBNAILAMOUNT)) + " of " + pageAmount;
+    //text to display current page like "2 / 320"
+    getCurrentPageOfMax() {
+        const resultText = 1 + (((this.state.shownStartIndex) / THUMBNAILAMOUNT)) + " / " + pageAmount;
         return resultText;
-        
+
     }
 
-    updateShownThumbnails(){
+    updateShownThumbnails() {
         const amountThumbnails = THUMBNAILAMOUNT;
         let shownThumbnails = [];
         let currentIndex = this.state.shownStartIndex;
-        let endingIndex = currentIndex+amountThumbnails;
-        for(currentIndex; currentIndex < endingIndex; currentIndex++){
+        let endingIndex = currentIndex + amountThumbnails;
+
+        for (currentIndex; currentIndex < endingIndex; currentIndex++) {
             //if there is less images to show than amountThumbnails
-            if(currentIndex >= this.state.content.length)
-            break;
+            if (currentIndex >= this.state.content.length)
+                break;
             else
-            shownThumbnails.push(this.state.content[currentIndex]);
+                shownThumbnails.push(this.state.content[currentIndex]);
         }
         this.setState({
-            currentEndIndex: currentIndex-1,
+            currentEndIndex: currentIndex - 1,
             shownThumbnails: shownThumbnails
         },
-        () => {
-            console.log("startIndex" + this.state.shownStartIndex);
-            console.log("ending index" + this.state.currentEndIndex);
-        })
-        
+            () => {
+                console.log("startIndex" + this.state.shownStartIndex);
+                console.log("ending index" + this.state.currentEndIndex);
+            })
+
     }
 
-    changeNextPage(){  
+    changeNextPage() {
         let currentEndIndex = this.state.currentEndIndex;
-        let newStartIndex = currentEndIndex+1;
+        let newStartIndex = currentEndIndex + 1;
 
-        if(newStartIndex >= this.state.content.length){
-            newStartIndex = 0; 
+        if (newStartIndex >= this.state.content.length) {
+            newStartIndex = 0;
         }
 
-        
+
         this.updateShownIndexAndThumbnails(newStartIndex);
     }
-    changePrevPage(){
+    changePrevPage() {
         let currentStartIndex = this.state.shownStartIndex;
-        let newStartIndex = currentStartIndex-THUMBNAILAMOUNT;
+        let newStartIndex = currentStartIndex - THUMBNAILAMOUNT;
         let dataLength = this.state.content.length;
 
-        if(newStartIndex < 0){
-            newStartIndex = dataLength - THUMBNAILAMOUNT;
+        if (newStartIndex < 0) {
+            const dataLengthModAmountshown = (dataLength % THUMBNAILAMOUNT);
+            if (dataLengthModAmountshown === 0)
+                newStartIndex = dataLength - THUMBNAILAMOUNT;
+            else {
+                newStartIndex = dataLength - (dataLengthModAmountshown);
+            }
         }
 
         this.updateShownIndexAndThumbnails(newStartIndex);
-        
-    }
-    updateShownIndexAndThumbnails(newStartIndex){
 
+    }
+
+    updateShownIndexAndThumbnails(newStartIndex) {
         //because setState is asynchronous, callback function is required to properly update the view
         this.setState({
             shownStartIndex: newStartIndex
         },
-        () => this.updateShownThumbnails()
+            () => this.updateShownThumbnails()
         )
     }
 
-    drawThumbnailView(){
-        return <ThumbnailView   shownThumbnails={this.state.shownThumbnails} 
-                                currentPage={this.getCurrentPageOfMax()}
-                                changeNextPage={() => this.changeNextPage()}
-                                changePrevPage={() => this.changePrevPage()}></ThumbnailView>;
+    drawThumbnailView() {
+        return <ThumbnailView shownThumbnails={this.state.shownThumbnails}
+            currentPage={this.getCurrentPageOfMax()}
+            changeNextPage={() => this.changeNextPage()}
+            changePrevPage={() => this.changePrevPage()}></ThumbnailView>;
     }
-    
-
-    
-
-    
 
     render() {
         return (
-            <div>
+            <div className={classes.PhotoViewer}>
                 {
                     this.state.isLoading ?
-                        <div>
-                            <p>loading page</p>
+                        <div className={classes.LoadingText}>
+                            <p>Loading Page</p>
                         </div>
                         :
                         <div>

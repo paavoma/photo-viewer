@@ -7,20 +7,20 @@
     box-shadow: 1px 1px 1px black;
     padding: 16px;
     left: 15%;
-    top: 5%;
+    top: 2%;
     box-sizing: border-box;
     
 }
 
-@media (min-width: 600px) {
+@media (min-width: 700px) {
     .Modal {
         width: 650px;
         
-        left: calc(50% - 330px);
+        left: calc(50% - 325px);
     }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 700px) {
     .Modal {
       width:100%;
       left: 0%;

@@ -36,30 +36,34 @@ class ThumbnailView extends Component {
     findElementIndexWithId(id) {
 
         const list = this.props.shownThumbnails;
-        var element = list.find(thumbnail => thumbnail.id == id);
+        var element = list.find(thumbnail => Number(thumbnail.id) === Number(id));
         return list.indexOf(element);
     }
 
     drawThumbnailView() {
         return (
             <div>
-                
-                
-                    <h1>photo-viewer</h1>
-                    <div className={classes.PrevButtonOverlay} onClick={this.props.changePrevPage}>
-                        <a className={classes.PrevButton}>&#8249;</a>
-                    </div>
-                    <div className={classes.NextButtonOverlay} onClick={this.props.changeNextPage}>
-                        <a className={classes.NextButton}>&#8250;</a>
-                    </div>
-                
 
-                
+
+                <h1>photo-viewer</h1>
+                <div><p>{this.props.currentPage}</p></div>
+                <div className={classes.PrevButtonOverlay} onClick={this.props.changePrevPage}>
+                    <p className={classes.PrevButton}>&#8249;</p>
+                </div>
+                <div className={classes.NextButtonOverlay} onClick={this.props.changeNextPage}>
+                    <p className={classes.NextButton}>&#8250;</p>
+                </div>
+
                 <div className={classes.ThumbnailsContainer}>
-
                     {
                         this.props.shownThumbnails.map((thumbnail, index) => {
-                            return <div className={classes.ThumbnailContainer} key={thumbnail.id}><img src={thumbnail.thumbnailUrl} key={thumbnail.id} onClick={this.showClickedImage} id={thumbnail.id}></img></div>
+                            return (
+                                <div className={classes.ThumbnailContainer} key={thumbnail.id}>
+                                    <img src={thumbnail.thumbnailUrl} 
+                                         key={thumbnail.id} onClick={this.showClickedImage} 
+                                         id={thumbnail.id} alt={thumbnail.title}></img>
+                                    </div>
+                                    ) 
 
                         })
                     }
@@ -74,14 +78,16 @@ class ThumbnailView extends Component {
     render() {
         return (
             <div className={classes.ThumbnailView}>
-                
+
                 {this.drawThumbnailView()}
                 {
                     this.state.showThumbnailView ?
                         ""
                         :
                         <Modal show={this.state.showThumbnailView} clicked={() => this.showThumbnailView()}>
-                            <LargeImage url={this.props.shownThumbnails[this.state.clickedImageIndex].url} title={this.props.shownThumbnails[this.state.clickedImageIndex].title} showThumbnailView={() => this.showThumbnailView()}></LargeImage>
+                            <LargeImage url={this.props.shownThumbnails[this.state.clickedImageIndex].url} 
+                                        title={this.props.shownThumbnails[this.state.clickedImageIndex].title} 
+                                        showThumbnailView={() => this.showThumbnailView()}></LargeImage>
                         </Modal>
 
                 }

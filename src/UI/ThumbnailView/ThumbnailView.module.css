@@ -5,8 +5,8 @@
 .ThumbnailsContainer{
     display:flex;
     flex-wrap: wrap;
-    
     justify-content: center;
+    min-height: 600px;
 }
 .ThumbnailContainer{
     padding-left: 2px;
@@ -14,54 +14,42 @@
     min-height:150px;
 }
 
-.PrevButtonOverlay {
+.PrevButtonOverlay, .NextButtonOverlay{
     position: fixed;
-    
     width: 100px;
     height: 100%;
     top: 40%;
+    z-index: 2;
+}
+
+.PrevButtonOverlay {
     left:-82px;
-    
-    z-index: 2;
-    
 }
+
 .NextButtonOverlay {
-    
-    position: fixed;
-    top:40%;
-    width: 100px;
-    height: 100%;
-    right: -50px;
-    
-    z-index: 2;
+    right: -50px; 
 }
 
-
-.PrevButton{
+.PrevButton, .NextButton{
     display:block;
     text-decoration: none;
     font-size:60px;
     padding: 8px 16px;
     background-color: rgba(0,0,0,0.5);
     border-radius:50%;
-    text-align:right;
     width:100px;
     height:100px;
 }
+
 .NextButton{
-    display:block;
-    text-decoration: none;
-    font-size:60px;
-    padding: 8px 16px;
-    background-color: rgba(0,0,0,0.5);
-    border-radius:50%;
-    text-align:left;
-    width: 100px;
-    height:100px;
+    text-align:left; 
 }
 
+.PrevButton {
+    text-align:right;
+}
 
-@media (min-width: 600px) {
+@media (min-width: 700px) {
     .ThumbnailView{
         width:50%;
         
@@ -74,5 +62,9 @@
     }
     .NextButton, .PrevButton {
         display:none;
+    }
+    .ThumbnailsContainer{
+        
+        min-height: 510px;
     }
 }
