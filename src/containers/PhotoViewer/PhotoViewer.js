@@ -75,11 +75,7 @@ class PhotoViewer extends Component {
         this.setState({
             currentEndIndex: currentIndex - 1,
             shownThumbnails: shownThumbnails
-        },
-            () => {
-                console.log("startIndex" + this.state.shownStartIndex);
-                console.log("ending index" + this.state.currentEndIndex);
-            })
+        })
 
     }
 
